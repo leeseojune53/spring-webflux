@@ -5,18 +5,21 @@ import io.github.leeseojune53.springwebflux.domain.user.repository.UserRepositor
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.junit.jupiter.MockitoExtension
 
+@ExtendWith(MockitoExtension::class)
 @DisplayName("UserService 테스트")
 internal class UserServiceTest {
 
     @Mock
-    private lateinit var userRepository: UserRepository
+    lateinit var userRepository: UserRepository
 
     @InjectMocks
-    private lateinit var sut: UserService
+    lateinit var sut: UserService
 
     @DisplayName("유저_회원가입_성공")
     @Test

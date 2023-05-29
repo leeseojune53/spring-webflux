@@ -7,11 +7,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.junit.jupiter.MockitoExtension
 
+@ExtendWith(MockitoExtension::class)
 @DisplayName("VoteService 테스트")
 internal class VoteServiceTest {
 
@@ -61,7 +64,7 @@ internal class VoteServiceTest {
         val vote = Vote("1", VoteStatus.PREPARE)
 
         //when
-        Mockito.`when`(voteRepository.getVoteStatus(any())).then { vote.status }
+        Mockito.`when`(voteRepository.getVoteStatus(vote.id)).then { vote.status }
 
         //then
 
