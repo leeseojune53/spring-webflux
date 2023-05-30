@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.any
+import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
+import reactor.test.StepVerifier
 
 @ExtendWith(MockitoExtension::class)
 @DisplayName("VoteService 테스트")
@@ -31,30 +31,33 @@ internal class VoteServiceTest {
     fun 투표_목록_조회_성공() {
         //given
         val vote = Vote("1", VoteStatus.PREPARE)
+        given(voteRepository.getVoteList()).willReturn(listOf(vote))
 
         //when
-        Mockito.`when`(voteRepository.getVoteList()).then { listOf(vote) }
+        val result = sut.getVoteList()
 
         //then
-
-        val resultVote = sut.getVoteList().get(0)
-
-        assertThat(resultVote.id).isEqualTo(vote.id)
-        assertThat(resultVote.status).isEqualTo(vote.status)
+        StepVerifier.create(result)
+            .assertNext {
+                assertThat(it.id).isEqualTo(vote.id)
+                assertThat(it.status).isEqualTo(vote.status)
+            }
+            .verifyComplete()
     }
 
     @DisplayName("투표 빈 목록을 조회할 수 있다.")
     @Test
     fun 투표_빈_목록() {
         //given
-        //give nothing
+        given(voteRepository.getVoteList()).willReturn(listOf())
 
         //when
-        Mockito.`when`(voteRepository.getVoteList()).then { emptyList<Vote>() }
+        val result = sut.getVoteList()
 
         //then
-
-        assertThat(sut.getVoteList()).isEmpty()
+        StepVerifier.create(result)
+            .expectNextCount(0L)
+            .verifyComplete()
     }
 
     @DisplayName("투표 상태를 조회할 수 있다.")
@@ -62,16 +65,15 @@ internal class VoteServiceTest {
     fun 투표_상태_조회_성공() {
         //given
         val vote = Vote("1", VoteStatus.PREPARE)
+        given(voteRepository.getVoteStatus(vote.id)).willReturn(vote.status)
 
         //when
-        Mockito.`when`(voteRepository.getVoteStatus(vote.id)).then { vote.status }
-
-        //then
-
-
         val resultStatus = sut.getVoteStatus(vote.id)
 
-        assertThat(resultStatus).isEqualTo(vote.status)
+        //then
+        StepVerifier.create(resultStatus)
+            .expectNext(vote.status)
+            .verifyComplete()
     }
 
 }

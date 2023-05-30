@@ -6,10 +6,11 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
+import reactor.test.StepVerifier
 
 @ExtendWith(MockitoExtension::class)
 @DisplayName("UserService 테스트")
@@ -27,12 +28,15 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
+        given(userRepository.isExistUserId(userId)).willReturn(false)
 
         //when
-        Mockito.`when`(userRepository.isExistUserId(userId)).then { false }
+        val result = sut.registerUser(userId, password)
 
         //then
-        sut.registerUser(userId, password)
+        StepVerifier.create(result)
+            .expectNextCount(1L)
+            .verifyComplete()
     }
 
     @DisplayName("유저_회원가입_아이디_중복_실패")
@@ -41,14 +45,15 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
+        given(userRepository.isExistUserId(userId)).willReturn(true)
 
         //when
-        Mockito.`when`(userRepository.isExistUserId(userId)).then { true }
+        val result = sut.registerUser(userId, password)
 
         //then
-        assertThrows(IllegalArgumentException::class.java) {
-            sut.registerUser(userId, password)
-        }
+        StepVerifier.create(result)
+            .expectError(IllegalArgumentException::class.java)
+            .verify()
     }
 
     @DisplayName("유저_로그인_성공")
@@ -57,15 +62,17 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
+        given(userRepository.isExistUserId(userId)).willReturn(true)
+        given(userRepository.getUserById(userId)).willReturn(User(userId, password))
 
         //when
-        Mockito.`when`(userRepository.isExistUserId(userId)).then { true }
-        Mockito.`when`(userRepository.getUserById(userId)).then { User(userId, password) }
+        val result = sut.authUser(userId, password)
+
 
         //then
-        val result = sut.authUser(userId, password)
-        assertNotNull(result.accessToken)
-        assertNotNull(result.refreshToken)
+        StepVerifier.create(result)
+            .expectNextCount(1L)
+            .verifyComplete()
     }
 
     @DisplayName("유저_로그인_아이디_없음")
@@ -74,14 +81,15 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
+        given(userRepository.isExistUserId(userId)).willReturn(false)
 
         //when
-        Mockito.`when`(userRepository.isExistUserId(userId)).then { false }
+        val result = sut.authUser(userId, password)
 
         //then
-        assertThrows(IllegalArgumentException::class.java) {
-            sut.authUser(userId, password)
-        }
+        StepVerifier.create(result)
+            .expectError(IllegalArgumentException::class.java)
+            .verify()
     }
 
     @DisplayName("유저_로그인_비밀번호_불일치")
@@ -90,15 +98,16 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
+        given(userRepository.isExistUserId(userId)).willReturn(true)
+        given(userRepository.getUserById(userId)).willReturn(User(userId, "wrong"))
 
         //when
-        Mockito.`when`(userRepository.isExistUserId(userId)).then { true }
-        Mockito.`when`(userRepository.getUserById(userId)).then { User(userId, "wrong") }
+        val result = sut.authUser(userId, password)
 
         //then
-        assertThrows(IllegalArgumentException::class.java) {
-            sut.authUser(userId, password)
-        }
+        StepVerifier.create(result)
+            .expectError(IllegalArgumentException::class.java)
+            .verify()
     }
 
 }
