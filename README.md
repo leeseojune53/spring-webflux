@@ -2,4 +2,4 @@
 
 Learn WebFlux
 
-Spring WebFlux + TDD
+Spring WebFlux + Functional Style + TDD
