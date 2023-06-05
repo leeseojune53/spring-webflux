@@ -15,12 +15,15 @@ object Libs {
     )
 
     val implementations = listOf(
-        "org.springframework.boot:spring-boot-starter-data-jpa",
         "org.springframework.boot:spring-boot-starter-webflux",
         "com.fasterxml.jackson.module:jackson-module-kotlin",
         "io.projectreactor.kotlin:reactor-kotlin-extensions",
         "org.jetbrains.kotlin:kotlin-reflect",
-        "org.jetbrains.kotlinx:kotlinx-coroutines-reactor"
+        "org.jetbrains.kotlinx:kotlinx-coroutines-reactor",
+
+        // R2DBC
+        "org.springframework.boot:spring-boot-starter-data-r2dbc",
+        "com.github.jasync-sql:jasync-mysql:2.1.16"
     )
 
     val compileOnly = listOf(
