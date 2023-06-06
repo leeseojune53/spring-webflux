@@ -23,7 +23,7 @@ object Libs {
 
         // R2DBC
         "org.springframework.boot:spring-boot-starter-data-r2dbc",
-        "com.github.jasync-sql:jasync-mysql:2.1.16"
+        "com.github.jasync-sql:jasync-r2dbc-mysql:2.1.16"
     )
 
     val compileOnly = listOf(
