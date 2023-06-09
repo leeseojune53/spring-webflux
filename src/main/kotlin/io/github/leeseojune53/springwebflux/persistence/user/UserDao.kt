@@ -4,12 +4,13 @@ import io.github.leeseojune53.springwebflux.domain.user.User
 import io.github.leeseojune53.springwebflux.domain.user.repository.UserRepository
 import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Repository
+import reactor.core.publisher.Mono
 
 @Repository
 class UserDao(
     private val userReactiveDao: UserReactiveDao
 ): UserRepository {
-    override fun isExistUserId(userId: String): Boolean {
+    override fun isExistUserId(userId: String): Mono<Boolean> {
         TODO("Not yet implemented")
     }
 
@@ -17,7 +18,7 @@ class UserDao(
         TODO("Not yet implemented")
     }
 
-    override fun getUserById(userId: String): User {
+    override fun getUserById(userId: String): Mono<User> {
         TODO("Not yet implemented")
     }
 }
