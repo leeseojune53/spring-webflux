@@ -42,7 +42,7 @@ internal class VoteServiceTest {
         StepVerifier.create(result)
             .assertNext {
                 assertThat(it.id).isEqualTo(vote.id)
-                assertThat(it.status).isEqualTo(vote.status)
+                assertThat(it.status).isEqualTo(vote.status.name)
             }
             .verifyComplete()
     }
