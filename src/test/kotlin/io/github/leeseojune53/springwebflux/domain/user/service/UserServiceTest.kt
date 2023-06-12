@@ -10,6 +10,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 @ExtendWith(MockitoExtension::class)
@@ -28,7 +29,7 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
-        given(userRepository.isExistUserId(userId)).willReturn(false)
+        given(userRepository.isExistUserId(userId)).willReturn(Mono.just(false))
 
         //when
         val result = sut.registerUser(userId, password)
@@ -45,7 +46,7 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
-        given(userRepository.isExistUserId(userId)).willReturn(true)
+        given(userRepository.isExistUserId(userId)).willReturn(Mono.just(true))
 
         //when
         val result = sut.registerUser(userId, password)
@@ -62,8 +63,8 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
-        given(userRepository.isExistUserId(userId)).willReturn(true)
-        given(userRepository.getUserById(userId)).willReturn(User(userId, password))
+        given(userRepository.isExistUserId(userId)).willReturn(Mono.just(true))
+        given(userRepository.getUserById(userId)).willReturn(Mono.just(User(userId, password)))
 
         //when
         val result = sut.authUser(userId, password)
@@ -81,7 +82,7 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
-        given(userRepository.isExistUserId(userId)).willReturn(false)
+        given(userRepository.isExistUserId(userId)).willReturn(Mono.just(false))
 
         //when
         val result = sut.authUser(userId, password)
@@ -98,8 +99,8 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
-        given(userRepository.isExistUserId(userId)).willReturn(true)
-        given(userRepository.getUserById(userId)).willReturn(User(userId, "wrong"))
+        given(userRepository.isExistUserId(userId)).willReturn(Mono.just(true))
+        given(userRepository.getUserById(userId)).willReturn(Mono.just(User(userId, "wrong")))
 
         //when
         val result = sut.authUser(userId, password)

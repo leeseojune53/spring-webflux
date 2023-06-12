@@ -12,6 +12,8 @@ import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 @ExtendWith(MockitoExtension::class)
@@ -31,7 +33,7 @@ internal class VoteServiceTest {
     fun 투표_목록_조회_성공() {
         //given
         val vote = Vote("1", VoteStatus.PREPARE)
-        given(voteRepository.getVoteList()).willReturn(listOf(vote))
+        given(voteRepository.getVoteList()).willReturn(Flux.just(vote))
 
         //when
         val result = sut.getVoteList()
@@ -49,7 +51,7 @@ internal class VoteServiceTest {
     @Test
     fun 투표_빈_목록() {
         //given
-        given(voteRepository.getVoteList()).willReturn(listOf())
+        given(voteRepository.getVoteList()).willReturn(Flux.just())
 
         //when
         val result = sut.getVoteList()
@@ -65,7 +67,7 @@ internal class VoteServiceTest {
     fun 투표_상태_조회_성공() {
         //given
         val vote = Vote("1", VoteStatus.PREPARE)
-        given(voteRepository.getVoteStatus(vote.id)).willReturn(vote.status)
+        given(voteRepository.getVoteStatus(vote.id)).willReturn(Mono.just(vote.status))
 
         //when
         val resultStatus = sut.getVoteStatus(vote.id)
