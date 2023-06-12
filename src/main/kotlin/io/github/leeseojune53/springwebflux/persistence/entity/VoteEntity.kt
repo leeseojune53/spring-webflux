@@ -9,6 +9,7 @@ import org.springframework.data.relational.core.mapping.Table
 class VoteEntity(
     @Id
     val id: String,
+    //TODO Enum으로 변경
     val status: String
 ) {
 
