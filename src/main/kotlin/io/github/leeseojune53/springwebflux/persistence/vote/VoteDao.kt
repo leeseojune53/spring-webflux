@@ -12,10 +12,12 @@ class VoteDao(
     private val voteReactiveDao: VoteReactiveDao
 ): VoteRepository {
     override fun getVoteList(): Flux<Vote> {
-        TODO("Not yet implemented")
+        return voteReactiveDao.findAll()
+            .map { it.toDomain() }
     }
 
     override fun getVoteStatus(id: String): Mono<VoteStatus> {
-        TODO("Not yet implemented")
+        return voteReactiveDao.findById(id)
+            .map { VoteStatus.valueOf(it.status) }
     }
 }
