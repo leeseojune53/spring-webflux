@@ -20,6 +20,7 @@ object Libs {
         "io.projectreactor.kotlin:reactor-kotlin-extensions",
         "org.jetbrains.kotlin:kotlin-reflect",
         "org.jetbrains.kotlinx:kotlinx-coroutines-reactor",
+        "org.springframework.boot:spring-boot-starter-security",
 
         // R2DBC
         "org.springframework.boot:spring-boot-starter-data-r2dbc",
