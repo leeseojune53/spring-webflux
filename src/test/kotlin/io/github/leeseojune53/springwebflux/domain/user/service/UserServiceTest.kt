@@ -1,5 +1,6 @@
 package io.github.leeseojune53.springwebflux.domain.user.service
 
+import io.github.leeseojune53.springwebflux.config.exception.FluxException
 import io.github.leeseojune53.springwebflux.domain.user.User
 import io.github.leeseojune53.springwebflux.domain.user.repository.UserRepository
 import org.junit.jupiter.api.Assertions.*
@@ -10,6 +11,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.security.crypto.password.PasswordEncoder
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
@@ -19,6 +21,9 @@ internal class UserServiceTest {
 
     @Mock
     lateinit var userRepository: UserRepository
+
+    @Mock
+    lateinit var passwordEncoder: PasswordEncoder
 
     @InjectMocks
     lateinit var sut: UserService
@@ -30,6 +35,7 @@ internal class UserServiceTest {
         val userId = "test"
         val password = "test"
         given(userRepository.isExistUserId(userId)).willReturn(Mono.just(false))
+        given(passwordEncoder.encode(password)).willReturn(password)
 
         //when
         val result = sut.registerUser(userId, password)
@@ -53,7 +59,7 @@ internal class UserServiceTest {
 
         //then
         StepVerifier.create(result)
-            .expectError(IllegalArgumentException::class.java)
+            .expectError(FluxException::class.java)
             .verify()
     }
 
