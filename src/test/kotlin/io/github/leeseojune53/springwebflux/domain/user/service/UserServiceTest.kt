@@ -1,7 +1,9 @@
 package io.github.leeseojune53.springwebflux.domain.user.service
 
 import io.github.leeseojune53.springwebflux.config.exception.FluxException
+import io.github.leeseojune53.springwebflux.config.security.JwtTokenProvider
 import io.github.leeseojune53.springwebflux.domain.user.User
+import io.github.leeseojune53.springwebflux.domain.user.model.Token
 import io.github.leeseojune53.springwebflux.domain.user.repository.UserRepository
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
@@ -25,6 +27,9 @@ internal class UserServiceTest {
     @Mock
     lateinit var passwordEncoder: PasswordEncoder
 
+    @Mock
+    lateinit var jwtTokenProvider: JwtTokenProvider
+
     @InjectMocks
     lateinit var sut: UserService
 
@@ -34,15 +39,20 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
+        val token = "token"
         given(userRepository.isExistUserId(userId)).willReturn(Mono.just(false))
         given(passwordEncoder.encode(password)).willReturn(password)
+        given(jwtTokenProvider.createToken(userId)).willReturn(token)
 
         //when
         val result = sut.registerUser(userId, password)
 
         //then
         StepVerifier.create(result)
-            .expectNextCount(1L)
+            .assertNext { tokenResult ->
+                assertEquals(token, tokenResult.accessToken)
+                assertEquals(token, tokenResult.refreshToken)
+            }
             .verifyComplete()
     }
 
@@ -69,8 +79,10 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
+        val token = "token"
         given(userRepository.isExistUserId(userId)).willReturn(Mono.just(true))
         given(userRepository.getUserById(userId)).willReturn(Mono.just(User(userId, password)))
+        given(jwtTokenProvider.createToken(userId)).willReturn(token)
 
         //when
         val result = sut.authUser(userId, password)
@@ -78,7 +90,10 @@ internal class UserServiceTest {
 
         //then
         StepVerifier.create(result)
-            .expectNextCount(1L)
+            .assertNext { tokenResult ->
+                assertEquals(token, tokenResult.accessToken)
+                assertEquals(token, tokenResult.refreshToken)
+            }
             .verifyComplete()
     }
 

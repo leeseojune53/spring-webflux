@@ -2,6 +2,7 @@ package io.github.leeseojune53.springwebflux.domain.user.service
 
 import io.github.leeseojune53.springwebflux.config.exception.ExceptionCode
 import io.github.leeseojune53.springwebflux.config.exception.FluxException
+import io.github.leeseojune53.springwebflux.config.security.JwtTokenProvider
 import io.github.leeseojune53.springwebflux.domain.user.model.Token
 import io.github.leeseojune53.springwebflux.domain.user.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -11,7 +12,8 @@ import reactor.core.publisher.Mono
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val jwtTokenProvider: JwtTokenProvider,
 ) {
 
     fun registerUser(userId: String, password: String): Mono<Token> {
@@ -22,7 +24,7 @@ class UserService(
             .map {
                 userRepository.registerUser(userId, passwordEncoder.encode(password))
                 // TODO JwtTokenProvider
-                Token("access", "refresh")
+                Token(jwtTokenProvider.createToken(userId), jwtTokenProvider.createToken(userId))
             }
     }
 
