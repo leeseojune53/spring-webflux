@@ -21,6 +21,8 @@ object Libs {
         "org.jetbrains.kotlin:kotlin-reflect",
         "org.jetbrains.kotlinx:kotlinx-coroutines-reactor",
         "org.springframework.boot:spring-boot-starter-security",
+        "io.jsonwebtoken:jjwt:0.9.1",
+
 
         // R2DBC
         "org.springframework.boot:spring-boot-starter-data-r2dbc",
