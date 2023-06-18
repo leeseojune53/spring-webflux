@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.security.crypto.password.PasswordEncoder
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 @DisplayName("UserService 테스트")
@@ -39,10 +40,12 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
-        val token = "token"
+        val accessToken = "accessToken"
+        val refreshToken = "refreshToken"
         given(userRepository.isExistUserId(userId)).willReturn(Mono.just(false))
         given(passwordEncoder.encode(password)).willReturn(password)
-        given(jwtTokenProvider.createToken(userId)).willReturn(token)
+        given(jwtTokenProvider.getAccessToken(userId)).willReturn(accessToken)
+        given(jwtTokenProvider.getRefreshToken(userId)).willReturn(refreshToken)
 
         //when
         val result = sut.registerUser(userId, password)
@@ -50,8 +53,8 @@ internal class UserServiceTest {
         //then
         StepVerifier.create(result)
             .assertNext { tokenResult ->
-                assertEquals(token, tokenResult.accessToken)
-                assertEquals(token, tokenResult.refreshToken)
+                assertEquals(accessToken, tokenResult.accessToken)
+                assertEquals(refreshToken, tokenResult.refreshToken)
             }
             .verifyComplete()
     }
@@ -77,12 +80,16 @@ internal class UserServiceTest {
     @Test
     fun 유저_로그인_성공() {
         //given
+        val id = UUID.randomUUID().toString()
         val userId = "test"
         val password = "test"
-        val token = "token"
+        val accessToken = "accessToken"
+        val refreshToken = "refreshToken"
         given(userRepository.isExistUserId(userId)).willReturn(Mono.just(true))
-        given(userRepository.getUserById(userId)).willReturn(Mono.just(User(userId, password)))
-        given(jwtTokenProvider.createToken(userId)).willReturn(token)
+        given(userRepository.getUserById(userId)).willReturn(Mono.just(User(id, userId, password)))
+        given(jwtTokenProvider.getAccessToken(userId)).willReturn(accessToken)
+        given(jwtTokenProvider.getRefreshToken(userId)).willReturn(refreshToken)
+        given(passwordEncoder.matches(password, password)).willReturn(true)
 
         //when
         val result = sut.authUser(userId, password)
@@ -91,8 +98,8 @@ internal class UserServiceTest {
         //then
         StepVerifier.create(result)
             .assertNext { tokenResult ->
-                assertEquals(token, tokenResult.accessToken)
-                assertEquals(token, tokenResult.refreshToken)
+                assertEquals(accessToken, tokenResult.accessToken)
+                assertEquals(refreshToken, tokenResult.refreshToken)
             }
             .verifyComplete()
     }
@@ -103,14 +110,15 @@ internal class UserServiceTest {
         //given
         val userId = "test"
         val password = "test"
-        given(userRepository.isExistUserId(userId)).willReturn(Mono.just(false))
+        given(userRepository.getUserById(userId)).willReturn(Mono.empty())
+        given(passwordEncoder.matches(password, password)).willReturn(true)
 
         //when
         val result = sut.authUser(userId, password)
 
         //then
         StepVerifier.create(result)
-            .expectError(IllegalArgumentException::class.java)
+            .expectError(FluxException::class.java)
             .verify()
     }
 
@@ -118,17 +126,18 @@ internal class UserServiceTest {
     @Test
     fun 유저_로그인_비밀번호_불일치() {
         //given
+        val id = UUID.randomUUID().toString()
         val userId = "test"
         val password = "test"
-        given(userRepository.isExistUserId(userId)).willReturn(Mono.just(true))
-        given(userRepository.getUserById(userId)).willReturn(Mono.just(User(userId, "wrong")))
+        given(userRepository.getUserById(userId)).willReturn(Mono.just(User(id, userId, "wrong")))
+        given(passwordEncoder.matches(password, password)).willReturn(true)
 
         //when
         val result = sut.authUser(userId, password)
 
         //then
         StepVerifier.create(result)
-            .expectError(IllegalArgumentException::class.java)
+            .expectError(FluxException::class.java)
             .verify()
     }
 
