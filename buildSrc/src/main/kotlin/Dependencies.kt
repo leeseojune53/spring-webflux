@@ -22,6 +22,7 @@ object Libs {
         "org.jetbrains.kotlinx:kotlinx-coroutines-reactor",
         "org.springframework.boot:spring-boot-starter-security",
         "io.jsonwebtoken:jjwt:0.9.1",
+        "javax.xml.bind:jaxb-api:2.3.1",
 
 
         // R2DBC
