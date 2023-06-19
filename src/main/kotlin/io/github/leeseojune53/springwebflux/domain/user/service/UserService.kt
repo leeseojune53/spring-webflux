@@ -18,13 +18,12 @@ class UserService(
 
     fun registerUser(userId: String, password: String): Mono<Token> {
         return userRepository.isExistUserId(userId)
-            .map {
-                if (it) throw FluxException(ExceptionCode.BAD_REQUEST, "이미 존재하는 아이디입니다.")
-                true
-            }
-            .map {
-                userRepository.registerUser(userId, passwordEncoder.encode(password))
-                Token(jwtTokenProvider.getAccessToken(userId), jwtTokenProvider.getRefreshToken(userId))
+            .flatMap {
+                if (it) Mono.error(FluxException(ExceptionCode.BAD_REQUEST, "이미 존재하는 아이디입니다."))
+                else {
+                    userRepository.registerUser(userId, passwordEncoder.encode(password))
+                    Mono.just(Token(jwtTokenProvider.getAccessToken(userId), jwtTokenProvider.getRefreshToken(userId)))
+                }
             }
     }
 

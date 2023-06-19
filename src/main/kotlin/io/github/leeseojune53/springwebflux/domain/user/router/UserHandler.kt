@@ -2,6 +2,7 @@ package io.github.leeseojune53.springwebflux.domain.user.router
 
 import io.github.leeseojune53.springwebflux.config.exception.ExceptionCode
 import io.github.leeseojune53.springwebflux.config.exception.FluxException
+import io.github.leeseojune53.springwebflux.domain.user.model.Token
 import io.github.leeseojune53.springwebflux.domain.user.service.UserService
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
@@ -16,13 +17,11 @@ class UserHandler(
 ) {
 
     fun registerUser(serverRequest: ServerRequest): Mono<ServerResponse> {
-        return serverRequest.bodyToMono(UserRequest::class.java)
-            .map {
+        val result = serverRequest.bodyToMono(UserRequest::class.java)
+            .flatMap {
                 userService.registerUser(it.userId, it.password)
             }
-            .flatMap {
-                ok().build()
-            }
+        return ok().contentType(MediaType.APPLICATION_JSON).body(result, Token::class.java)
     }
 
     class UserRequest(
