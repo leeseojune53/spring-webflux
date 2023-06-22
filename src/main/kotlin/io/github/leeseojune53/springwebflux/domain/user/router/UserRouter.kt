@@ -11,6 +11,7 @@ class UserRouter {
     fun userBaseRouter(userHandler: UserHandler) = router {
         "/users".nest {
             POST("/register", userHandler::registerUser)
+            POST("/auth", userHandler::authUser)
         }
     }
 

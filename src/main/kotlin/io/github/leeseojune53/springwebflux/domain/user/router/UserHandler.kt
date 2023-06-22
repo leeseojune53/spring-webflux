@@ -24,6 +24,14 @@ class UserHandler(
         return ok().contentType(MediaType.APPLICATION_JSON).body(result, Token::class.java)
     }
 
+    fun authUser(serverRequest: ServerRequest): Mono<ServerResponse> {
+        val result = serverRequest.bodyToMono(UserRequest::class.java)
+            .flatMap {
+                userService.authUser(it.userId, it.password)
+            }
+        return ok().contentType(MediaType.APPLICATION_JSON).body(result, Token::class.java)
+    }
+
     class UserRequest(
         val userId: String,
         val password: String
