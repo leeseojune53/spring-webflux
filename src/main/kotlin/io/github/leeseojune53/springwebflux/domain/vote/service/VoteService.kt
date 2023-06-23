@@ -14,11 +14,10 @@ class VoteService(
 
     fun getVoteList(): Flux<VoteElement> {
         return voteRepository.getVoteList()
-            .map { VoteElement(it.id, it.status.name) }
+            .map { VoteElement(it.id, it.status) }
     }
 
     fun getVoteStatus(voteId: String): Mono<VoteStatus> {
         return voteRepository.getVoteStatus(voteId)
     }
-
 }

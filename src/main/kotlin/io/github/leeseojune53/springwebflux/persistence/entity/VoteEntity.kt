@@ -9,15 +9,13 @@ import org.springframework.data.relational.core.mapping.Table
 class VoteEntity(
     @Id
     val id: String,
-    //TODO Enum으로 변경
-    val status: String
+    val status: VoteStatus
 ) {
 
     fun toDomain(): Vote {
         return Vote(
             id = id,
-            status = VoteStatus.valueOf(status)
+            status = status
         )
     }
-
 }

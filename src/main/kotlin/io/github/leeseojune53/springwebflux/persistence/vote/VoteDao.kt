@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono
 @Repository
 class VoteDao(
     private val voteReactiveDao: VoteReactiveDao
-): VoteRepository {
+) : VoteRepository {
     override fun getVoteList(): Flux<Vote> {
         return voteReactiveDao.findAll()
             .map { it.toDomain() }
@@ -18,6 +18,6 @@ class VoteDao(
 
     override fun getVoteStatus(id: String): Mono<VoteStatus> {
         return voteReactiveDao.findById(id)
-            .map { VoteStatus.valueOf(it.status) }
+            .map { it.status }
     }
 }

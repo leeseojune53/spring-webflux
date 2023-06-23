@@ -4,7 +4,6 @@ import io.github.leeseojune53.springwebflux.domain.vote.Vote
 import io.github.leeseojune53.springwebflux.domain.vote.enum.VoteStatus
 import io.github.leeseojune53.springwebflux.domain.vote.repository.VoteRepository
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -26,23 +25,21 @@ internal class VoteServiceTest {
     @InjectMocks
     lateinit var sut: VoteService
 
-
-
     @DisplayName("투표 목록을 조회할 수 있다.")
     @Test
     fun 투표_목록_조회_성공() {
-        //given
+        // given
         val vote = Vote("1", VoteStatus.PREPARE)
         given(voteRepository.getVoteList()).willReturn(Flux.just(vote))
 
-        //when
+        // when
         val result = sut.getVoteList()
 
-        //then
+        // then
         StepVerifier.create(result)
             .assertNext {
                 assertThat(it.id).isEqualTo(vote.id)
-                assertThat(it.status).isEqualTo(vote.status.name)
+                assertThat(it.status).isEqualTo(vote.status)
             }
             .verifyComplete()
     }
@@ -50,13 +47,13 @@ internal class VoteServiceTest {
     @DisplayName("투표 빈 목록을 조회할 수 있다.")
     @Test
     fun 투표_빈_목록() {
-        //given
+        // given
         given(voteRepository.getVoteList()).willReturn(Flux.just())
 
-        //when
+        // when
         val result = sut.getVoteList()
 
-        //then
+        // then
         StepVerifier.create(result)
             .expectNextCount(0L)
             .verifyComplete()
@@ -65,17 +62,16 @@ internal class VoteServiceTest {
     @DisplayName("투표 상태를 조회할 수 있다.")
     @Test
     fun 투표_상태_조회_성공() {
-        //given
+        // given
         val vote = Vote("1", VoteStatus.PREPARE)
         given(voteRepository.getVoteStatus(vote.id)).willReturn(Mono.just(vote.status))
 
-        //when
+        // when
         val resultStatus = sut.getVoteStatus(vote.id)
 
-        //then
+        // then
         StepVerifier.create(resultStatus)
             .expectNext(vote.status)
             .verifyComplete()
     }
-
 }
