@@ -3,7 +3,6 @@ package io.github.leeseojune53.springwebflux.config.security
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Component
-import java.util.Base64
 
 @Component
 class JwtTokenProvider {
@@ -20,9 +19,8 @@ class JwtTokenProvider {
         return Jwts.builder()
             .setSubject(userId)
             .claim("tokenType", tokenType)
-                //TODO SecretKey
+            // TODO SecretKey
             .signWith(SignatureAlgorithm.HS256, "secretKey".toByteArray())
             .compact()
     }
-
 }

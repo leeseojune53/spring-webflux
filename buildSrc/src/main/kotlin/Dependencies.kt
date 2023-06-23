@@ -2,6 +2,7 @@ object PluginVersions {
     const val springFramework = "3.1.0"
     const val springDependencyManagement = "1.1.0"
     const val kotlin = "1.8.21"
+    const val spotless = "6.11.0"
 }
 
 object Libs {
@@ -11,7 +12,8 @@ object Libs {
         "io.spring.dependency-management" to PluginVersions.springDependencyManagement,
         "org.jetbrains.kotlin.jvm" to PluginVersions.kotlin,
         "org.jetbrains.kotlin.plugin.spring" to PluginVersions.kotlin,
-        "org.jetbrains.kotlin.plugin.jpa" to PluginVersions.kotlin
+        "org.jetbrains.kotlin.plugin.jpa" to PluginVersions.kotlin,
+        "com.diffplug.spotless" to PluginVersions.spotless,
     )
 
     val implementations = listOf(

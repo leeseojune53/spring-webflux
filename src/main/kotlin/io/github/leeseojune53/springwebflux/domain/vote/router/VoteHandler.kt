@@ -24,5 +24,4 @@ class VoteHandler(
         val result = voteService.getVoteStatus(voteId)
         return ok().contentType(MediaType.APPLICATION_JSON).body(result, String::class.java)
     }
-
 }

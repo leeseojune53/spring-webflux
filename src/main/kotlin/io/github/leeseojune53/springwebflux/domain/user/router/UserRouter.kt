@@ -14,5 +14,4 @@ class UserRouter {
             POST("/auth", userHandler::authUser)
         }
     }
-
 }

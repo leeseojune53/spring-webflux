@@ -13,14 +13,15 @@ import reactor.core.publisher.Mono
 class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val jwtTokenProvider: JwtTokenProvider,
+    private val jwtTokenProvider: JwtTokenProvider
 ) {
 
     fun registerUser(userId: String, password: String): Mono<Token> {
         return userRepository.isExistUserId(userId)
             .flatMap {
-                if (it) Mono.error(FluxException(ExceptionCode.BAD_REQUEST, "이미 존재하는 아이디입니다."))
-                else {
+                if (it) {
+                    Mono.error(FluxException(ExceptionCode.BAD_REQUEST, "이미 존재하는 아이디입니다."))
+                } else {
                     userRepository.registerUser(userId, passwordEncoder.encode(password))
                     Mono.just(Token(jwtTokenProvider.getAccessToken(userId), jwtTokenProvider.getRefreshToken(userId)))
                 }
@@ -35,5 +36,4 @@ class UserService(
             }
             .switchIfEmpty(Mono.error(FluxException(ExceptionCode.BAD_REQUEST, "존재하지 않는 아이디입니다.")))
     }
-
 }

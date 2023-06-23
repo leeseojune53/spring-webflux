@@ -12,9 +12,9 @@ class UserEntity(
     var uuid: String?,
     val userId: String,
     val password: String
-): Persistable<String> {
+) : Persistable<String> {
 
-    constructor(userId: String, password: String): this(null, userId, password)
+    constructor(userId: String, password: String) : this(null, userId, password)
 
     fun toDomain(): User {
         return User(
@@ -29,11 +29,10 @@ class UserEntity(
     }
 
     override fun isNew(): Boolean {
-        if(uuid == null) {
+        if (uuid == null) {
             uuid = UUID.randomUUID().toString()
             return true
         }
         return false
     }
-
 }

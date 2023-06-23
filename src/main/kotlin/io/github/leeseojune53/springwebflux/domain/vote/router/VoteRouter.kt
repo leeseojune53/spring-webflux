@@ -14,5 +14,4 @@ class VoteRouter {
             GET("/{voteId}/status", voteHandler::getVoteStatus)
         }
     }
-
 }

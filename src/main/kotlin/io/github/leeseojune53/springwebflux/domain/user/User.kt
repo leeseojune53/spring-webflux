@@ -7,6 +7,5 @@ class User(
     val userId: String,
     val password: String
 ) {
-    constructor(uuid: String, userId: String, password: String): this(UUID.fromString(uuid), userId, password)
+    constructor(uuid: String, userId: String, password: String) : this(UUID.fromString(uuid), userId, password)
 }
-

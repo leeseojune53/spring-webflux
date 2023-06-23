@@ -3,9 +3,8 @@ package io.github.leeseojune53.springwebflux.domain.user.service
 import io.github.leeseojune53.springwebflux.config.exception.FluxException
 import io.github.leeseojune53.springwebflux.config.security.JwtTokenProvider
 import io.github.leeseojune53.springwebflux.domain.user.User
-import io.github.leeseojune53.springwebflux.domain.user.model.Token
 import io.github.leeseojune53.springwebflux.domain.user.repository.UserRepository
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -37,7 +36,7 @@ internal class UserServiceTest {
     @DisplayName("유저_회원가입_성공")
     @Test
     fun 유저_회원가입_성공() {
-        //given
+        // given
         val userId = "test"
         val password = "test"
         val accessToken = "accessToken"
@@ -47,10 +46,10 @@ internal class UserServiceTest {
         given(jwtTokenProvider.getAccessToken(userId)).willReturn(accessToken)
         given(jwtTokenProvider.getRefreshToken(userId)).willReturn(refreshToken)
 
-        //when
+        // when
         val result = sut.registerUser(userId, password)
 
-        //then
+        // then
         StepVerifier.create(result)
             .assertNext { tokenResult ->
                 assertEquals(accessToken, tokenResult.accessToken)
@@ -62,15 +61,15 @@ internal class UserServiceTest {
     @DisplayName("유저_회원가입_아이디_중복_실패")
     @Test
     fun 유저_회원가입_아이디_중복_실패() {
-        //given
+        // given
         val userId = "test"
         val password = "test"
         given(userRepository.isExistUserId(userId)).willReturn(Mono.just(true))
 
-        //when
+        // when
         val result = sut.registerUser(userId, password)
 
-        //then
+        // then
         StepVerifier.create(result)
             .expectError(FluxException::class.java)
             .verify()
@@ -79,23 +78,21 @@ internal class UserServiceTest {
     @DisplayName("유저_로그인_성공")
     @Test
     fun 유저_로그인_성공() {
-        //given
+        // given
         val id = UUID.randomUUID().toString()
         val userId = "test"
         val password = "test"
         val accessToken = "accessToken"
         val refreshToken = "refreshToken"
-        given(userRepository.isExistUserId(userId)).willReturn(Mono.just(true))
         given(userRepository.getUserById(userId)).willReturn(Mono.just(User(id, userId, password)))
         given(jwtTokenProvider.getAccessToken(userId)).willReturn(accessToken)
         given(jwtTokenProvider.getRefreshToken(userId)).willReturn(refreshToken)
         given(passwordEncoder.matches(password, password)).willReturn(true)
 
-        //when
+        // when
         val result = sut.authUser(userId, password)
 
-
-        //then
+        // then
         StepVerifier.create(result)
             .assertNext { tokenResult ->
                 assertEquals(accessToken, tokenResult.accessToken)
@@ -107,16 +104,15 @@ internal class UserServiceTest {
     @DisplayName("유저_로그인_아이디_없음")
     @Test
     fun 유저_로그인_아이디_없음() {
-        //given
+        // given
         val userId = "test"
         val password = "test"
         given(userRepository.getUserById(userId)).willReturn(Mono.empty())
-        given(passwordEncoder.matches(password, password)).willReturn(true)
 
-        //when
+        // when
         val result = sut.authUser(userId, password)
 
-        //then
+        // then
         StepVerifier.create(result)
             .expectError(FluxException::class.java)
             .verify()
@@ -125,20 +121,19 @@ internal class UserServiceTest {
     @DisplayName("유저_로그인_비밀번호_불일치")
     @Test
     fun 유저_로그인_비밀번호_불일치() {
-        //given
+        // given
         val id = UUID.randomUUID().toString()
         val userId = "test"
         val password = "test"
-        given(userRepository.getUserById(userId)).willReturn(Mono.just(User(id, userId, "wrong")))
-        given(passwordEncoder.matches(password, password)).willReturn(true)
+        given(userRepository.getUserById(userId)).willReturn(Mono.just(User(id, userId, password)))
+        given(passwordEncoder.matches(password, password)).willReturn(false)
 
-        //when
+        // when
         val result = sut.authUser(userId, password)
 
-        //then
+        // then
         StepVerifier.create(result)
             .expectError(FluxException::class.java)
             .verify()
     }
-
 }

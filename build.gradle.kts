@@ -27,6 +27,17 @@ dependencies {
     Libs.testImplementation.forEach(::testImplementation)
 }
 
+spotless {
+    kotlin {
+        ktlint()
+        trimTrailingWhitespace()
+    }
+    kotlinGradle {
+        ktlint()
+        trimTrailingWhitespace()
+    }
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")

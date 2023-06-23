@@ -9,7 +9,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 
 @Configuration
 @EnableWebFluxSecurity
-class SecurityConfig  {
+class SecurityConfig {
 
     @Bean
     fun getPasswordEncoder() = BCryptPasswordEncoder()
@@ -25,7 +25,4 @@ class SecurityConfig  {
         .anyExchange().authenticated()
         .and()
         .build()
-
-
-
 }

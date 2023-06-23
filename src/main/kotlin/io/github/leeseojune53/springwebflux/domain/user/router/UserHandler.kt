@@ -1,7 +1,5 @@
 package io.github.leeseojune53.springwebflux.domain.user.router
 
-import io.github.leeseojune53.springwebflux.config.exception.ExceptionCode
-import io.github.leeseojune53.springwebflux.config.exception.FluxException
 import io.github.leeseojune53.springwebflux.domain.user.model.Token
 import io.github.leeseojune53.springwebflux.domain.user.service.UserService
 import org.springframework.http.MediaType
@@ -36,7 +34,4 @@ class UserHandler(
         val userId: String,
         val password: String
     )
-
-
-
 }

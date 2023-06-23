@@ -10,5 +10,4 @@ interface UserRepository {
     fun registerUser(userId: String, password: String)
 
     fun getUserById(userId: String): Mono<User>
-
 }

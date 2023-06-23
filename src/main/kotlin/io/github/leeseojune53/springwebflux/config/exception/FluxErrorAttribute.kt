@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 
 @Component
-class FluxErrorAttribute: DefaultErrorAttributes() {
+class FluxErrorAttribute : DefaultErrorAttributes() {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -30,5 +30,4 @@ class FluxErrorAttribute: DefaultErrorAttributes() {
         }
         return errorAttributes
     }
-
 }
