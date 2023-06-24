@@ -1,5 +1,6 @@
 package io.github.leeseojune53.springwebflux.config.security
 
+import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Component
@@ -23,4 +24,16 @@ class JwtTokenProvider {
             .signWith(SignatureAlgorithm.HS256, "secretKey".toByteArray())
             .compact()
     }
+
+    fun getUserIdByToken(token: String): String {
+        return getClaimByToken(token).subject
+    }
+
+    fun getClaimByToken(token: String): Claims {
+        return Jwts.parser()
+            .setSigningKey("secretKey".toByteArray())
+            .parseClaimsJws(token)
+            .body
+    }
+
 }
