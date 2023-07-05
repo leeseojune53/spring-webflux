@@ -22,6 +22,7 @@ repositories {
 
 dependencies {
     Libs.implementations.forEach(::implementation)
+    Libs.runtimeOnly.forEach(::runtimeOnly)
     Libs.compileOnly.forEach(::compileOnly)
     Libs.annotationProcessor.forEach(::annotationProcessor)
     Libs.testImplementation.forEach(::testImplementation)

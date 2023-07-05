@@ -23,13 +23,18 @@ object Libs {
         "org.jetbrains.kotlin:kotlin-reflect",
         "org.jetbrains.kotlinx:kotlinx-coroutines-reactor",
         "org.springframework.boot:spring-boot-starter-security",
-        "io.jsonwebtoken:jjwt:0.9.1",
+        "io.jsonwebtoken:jjwt-api:0.11.5",
         "javax.xml.bind:jaxb-api:2.3.1",
 
 
         // R2DBC
         "org.springframework.boot:spring-boot-starter-data-r2dbc",
         "com.github.jasync-sql:jasync-r2dbc-mysql:2.1.16"
+    )
+
+    val runtimeOnly = listOf(
+        "io.jsonwebtoken:jjwt-impl:0.11.5",
+        "io.jsonwebtoken:jjwt-jackson:0.11.5"
     )
 
     val compileOnly = listOf(
