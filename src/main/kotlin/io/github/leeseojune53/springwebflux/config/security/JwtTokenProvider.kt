@@ -2,7 +2,6 @@ package io.github.leeseojune53.springwebflux.config.security
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -24,7 +23,9 @@ class JwtTokenProvider {
         val bearerToken = request.headers[TOKEN_HEADER]?.get(0)
         if (bearerToken.isNullOrEmpty() ||
             bearerToken.length < TOKEN_PREFIX.length
-        ) return null
+        ) {
+            return null
+        }
         return bearerToken.substring(TOKEN_PREFIX.length + 1)
     }
 
@@ -33,7 +34,9 @@ class JwtTokenProvider {
             User.withUsername(getUserIdByToken(token))
                 .password("")
                 .authorities(emptyList())
-                .build(), token, emptyList()
+                .build(),
+            token,
+            emptyList()
         )
     }
 
@@ -67,5 +70,4 @@ class JwtTokenProvider {
     }
 
     private fun getSecretKey() = Keys.hmacShaKeyFor(SECRET_KEY.toByteArray(StandardCharsets.UTF_8))
-
 }

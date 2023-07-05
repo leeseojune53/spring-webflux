@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono
 
 class JwtTokenFilter(
     private val jwtTokenProvider: JwtTokenProvider
-): WebFilter {
+) : WebFilter {
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         val token = jwtTokenProvider.resolveToken(exchange.request)
@@ -19,6 +19,4 @@ class JwtTokenFilter(
 
         return chain.filter(exchange)
     }
-
-
 }
