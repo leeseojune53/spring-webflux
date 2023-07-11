@@ -1,9 +1,17 @@
 package io.github.leeseojune53.springwebflux.domain.ballot.service
 
-class BallotService {
+import io.github.leeseojune53.springwebflux.domain.ballot.Ballot
+import io.github.leeseojune53.springwebflux.domain.ballot.repository.BallotRepository
+import org.springframework.stereotype.Service
+import java.util.UUID
 
-    fun postBallot() {
-        TODO()
+@Service
+class BallotService(
+    private val ballotRepository: BallotRepository
+) {
+
+    fun postBallot(voteId: String) {
+        ballotRepository.save(Ballot(UUID.randomUUID().toString(), voteId, "temp", "temp"))
     }
 
     fun changeBallot() {

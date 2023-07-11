@@ -11,6 +11,7 @@ class BallotEntity(
     @Id
     var id: String?,
     val voteId: String,
+    val userId: String,
     val target: String
 ): Persistable<String> {
 
@@ -18,6 +19,7 @@ class BallotEntity(
         return Ballot(
             id = id!!,
             voteId = voteId,
+            userId = userId,
             target = target
         )
     }
