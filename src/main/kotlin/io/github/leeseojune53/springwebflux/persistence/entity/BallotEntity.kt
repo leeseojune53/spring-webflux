@@ -9,7 +9,7 @@ import java.util.UUID
 @Table("ballot")
 class BallotEntity(
     @Id
-    var id: String?,
+    var uuid: String?,
     val voteId: String,
     val userId: String,
     val target: String
@@ -17,7 +17,7 @@ class BallotEntity(
 
     fun toDomain(): Ballot {
         return Ballot(
-            id = id!!,
+            id = uuid!!,
             voteId = voteId,
             userId = userId,
             target = target
@@ -25,16 +25,18 @@ class BallotEntity(
     }
 
     override fun getId(): String? {
-        return id
+        return uuid
     }
 
     override fun isNew(): Boolean {
-        if(id == null) {
-            id = UUID.randomUUID().toString()
+        if(uuid == null) {
+            uuid = UUID.randomUUID().toString()
             return true
         }
         return false
     }
+
+    constructor(ballot: Ballot): this(ballot.id, ballot.voteId, ballot.userId, ballot.target)
 
 
 

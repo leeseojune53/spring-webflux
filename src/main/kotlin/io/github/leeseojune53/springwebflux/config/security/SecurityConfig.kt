@@ -24,6 +24,7 @@ class SecurityConfig(
         http.authorizeExchange { exchange ->
             exchange.pathMatchers("/users/**").permitAll()
             exchange.pathMatchers("/votes/**").permitAll()
+            exchange.pathMatchers("/ballots/**").permitAll()
             exchange.anyExchange().authenticated()
         }
             .csrf().disable()
